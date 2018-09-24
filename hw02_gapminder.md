@@ -29,7 +29,7 @@ typeof(gapminder)
 
     ## [1] "list"
 
-Object gapminder is a class of tbl\_df. \> tbl\_df object is a data
+Object gapminder is a class of tbl\_df. tbl\_df object is a data
 frame providing a nicer printing method, useful when working with large
 data sets.
 
