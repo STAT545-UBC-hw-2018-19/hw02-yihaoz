@@ -1,0 +1,200 @@
+---
+title: "Homework 02: Explore Gapminder and use dplyr"
+output: 
+    github_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load the gapminder and tidyverse library
+```{r}
+library(gapminder)
+library(tidyverse)
+```
+
+### Smell test the data
+Object gapminder is a list. It can be determined by "typeof()" command:
+```{r}
+typeof(gapminder)
+```
+
+Object gapminder is a class of tbl_df. 
+> tbl_df object is a data frame providing a nicer printing method, useful when working with large data sets.
+```{r}
+class(gapminder)
+```
+
+It has 6 variables/columns and 1704 rows/observations.
+```{r}
+ncol(gapminder)
+nrow(gapminder)
+```
+
+Another way to get the size is to use dim(x)
+```{r}
+dim(gapminder)
+```
+
+"sapply(list, function)" with function = typeof can be used to display the data type of each variable
+```{r}
+sapply(gapminder, typeof)
+```
+
+### Explore individual variables
+#### Explore variable "lifeExp"
+Getting range of lifeExp seems appropriate. To do so:
+```{r}
+gapminder %>% 
+  select(lifeExp) %>% 
+  range()
+```
+
+Use "summary()" to get the mean, min, max and other statistics
+```{r}
+summary(gapminder$lifeExp)
+```
+
+Graphical statistics can be used to get the distribution and spread of lifeExp
+```{r}
+ggplot(gapminder, aes(lifeExp)) + 
+  geom_histogram(aes(y=..density..), color = 'blue', fill = 'orange', bins = 50) + 
+  geom_density()
+```
+
+#### Explore variable gdpPercap
+summary of gdpPercap
+```{r}
+summary(gapminder$gdpPercap)
+```
+
+Distribution of gdpPercap
+```{r}
+ggplot(gapminder, aes(gdpPercap)) + 
+  geom_histogram(aes(y=..density..), color = 'black', fill = 'blue', bins = 50) + 
+  geom_density()
+```
+
+#### Explore variable country
+For categorical variable like country, "unique()" can be used to determine what countries are studied. We can see 142 different countries are in gapminder
+```{r}
+unique(gapminder$country)
+```
+
+Statistics about country is not very useful. However, we could filter by country to study the other variables against the same country. 
+```{r}
+gapminder %>% 
+  filter(country == 'Germany') %>% 
+  ggplot(aes(year, lifeExp)) + 
+  geom_line() + 
+  geom_point()
+```
+
+### Explore various plot types
+#### Scatter plot of population and gdpPercap
+The scatter plot of population and gdpPercap for all countries
+```{r}
+ggplot(gapminder, aes(pop, gdpPercap)) + 
+  geom_point()
+```
+
+"filter()" can be used to show the above scatter plot for a single country like Canada
+```{r}
+gapminder %>% 
+  select(country, pop, gdpPercap) %>% 
+  filter(country == 'Canada') %>% 
+  ggplot(aes(pop, gdpPercap)) + 
+  geom_point()
+```
+
+Logic "Or" can be used if we want to show results for two or more countries
+```{r}
+gapminder %>% 
+  select(country, pop, gdpPercap) %>% 
+  filter(country == 'Canada' | country == "United States") %>% 
+  ggplot(aes(pop, gdpPercap)) + 
+  geom_point(aes(colour = country))
+```
+
+#### Histogram, kernel density plot for gdpPercap
+For all countries
+```{r}
+ggplot(gapminder, aes(gdpPercap)) + 
+  geom_histogram(aes(y=..density..), fill = 'blue', bins = 80) + 
+  geom_density()
+```
+
+Use "filter()" to get the density plot for gdpPercap for Europe
+```{r}
+gapminder %>% 
+  select(continent, gdpPercap) %>% 
+  filter(continent == 'Europe') %>%   
+  ggplot(aes(gdpPercap)) + 
+  geom_histogram(aes(y=..density..), fill = 'blue', bins = 50) + 
+  geom_density()
+```
+
+#### Box plot for continent and their gdpPercap
+For all continents:
+```{r}
+gapminder %>% 
+  select(continent, pop) %>% 
+  ggplot(aes(continent, pop)) + 
+  scale_y_log10() +
+  geom_boxplot(aes(fill = continent, alpha = 0.2)) + 
+  geom_jitter(alpha = 0.25)
+```
+
+"filter()" can also be used to filter out the continents by intention
+For Europe and Americas only:
+```{r}
+gapminder %>% 
+  select(continent, pop) %>% 
+  filter(continent == 'Europe' | continent == 'Americas') %>% 
+  ggplot(aes(continent, pop)) + 
+  scale_y_log10() +
+  geom_boxplot(aes(fill = continent, alpha = 0.2)) + 
+  geom_jitter(alpha = 0.25)
+```
+
+### But I want to do more!
+#### Filter command
+```{r}
+filter(gapminder, country == c("Rwanda", "Afghanistan"))
+```
+
+The command is not correct. It truncated half of the result. c("Rwanda", "Afghansitan") makes a list and then the data form is filtered by a list. We want to filter the data by country instead of list. If it is mandatory to use a list, the property is to iterate through the list and filter by every item in the list:
+
+```{r}
+filter(gapminder, country %in% c("Rwanda", "Afghanistan"))
+```
+
+#### Present numerical tables in a more attractive form, such as using knitr::kable().
+```{r}
+library(knitr)
+k = gapminder %>% 
+      select(continent, country, year, lifeExp, gdpPercap) %>%
+      filter(continent == 'Americas' & year == '2007') %>% 
+      kable(align = 'c') 
+print(k)
+```
+
+#### More dplyr functions for operating on a single table
+With "arrange()", the table can be sort by values in the columns.
+```{r}
+gapminder %>% 
+  arrange(lifeExp) %>% 
+  filter(continent == 'Africa')
+```
+
+use "summarise" to create summaries of Canada population
+```{r}
+gapminder %>% 
+  filter(country == 'Canada') %>% 
+  summarise(avg_pop = mean(pop),
+            max_pop = max(pop),
+            min_pop = min(pop))
+```
