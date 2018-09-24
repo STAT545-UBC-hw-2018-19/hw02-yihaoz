@@ -343,7 +343,7 @@ filter(gapminder, country == c("Rwanda", "Afghanistan"))
 The command is not correct. It truncated half of the result. c(“Rwanda”,
 “Afghansitan”) makes a list and then the data form is filtered by a
 list. We want to filter the data by country instead of list. If it is
-mandatory to use a list, the property is to iterate through the list and
+mandatory to use a list, the proper way is to iterate through the list and
 filter by every item in the list:
 
 ``` r
