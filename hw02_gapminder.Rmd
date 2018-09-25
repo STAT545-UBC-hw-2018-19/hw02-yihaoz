@@ -144,7 +144,7 @@ gapminder %>%
   select(continent, pop) %>% 
   ggplot(aes(continent, pop)) + 
   scale_y_log10() +
-  geom_boxplot(aes(fill = continent, alpha = 0.2)) + 
+  geom_boxplot(aes(fill = continent), alpha = 0.2) + 
   geom_jitter(alpha = 0.25)
 ```
 
@@ -156,7 +156,7 @@ gapminder %>%
   filter(continent == 'Europe' | continent == 'Americas') %>% 
   ggplot(aes(continent, pop)) + 
   scale_y_log10() +
-  geom_boxplot(aes(fill = continent, alpha = 0.2)) + 
+  geom_boxplot(aes(fill = continent), alpha = 0.2) + 
   geom_jitter(alpha = 0.25)
 ```
 

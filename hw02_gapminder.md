@@ -8,14 +8,14 @@ library(gapminder)
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ──────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
     ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ─────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -295,7 +295,7 @@ gapminder %>%
   select(continent, pop) %>% 
   ggplot(aes(continent, pop)) + 
   scale_y_log10() +
-  geom_boxplot(aes(fill = continent, alpha = 0.2)) + 
+  geom_boxplot(aes(fill = continent), alpha = 0.2) + 
   geom_jitter(alpha = 0.25)
 ```
 
@@ -310,7 +310,7 @@ gapminder %>%
   filter(continent == 'Europe' | continent == 'Americas') %>% 
   ggplot(aes(continent, pop)) + 
   scale_y_log10() +
-  geom_boxplot(aes(fill = continent, alpha = 0.2)) + 
+  geom_boxplot(aes(fill = continent), alpha = 0.2) + 
   geom_jitter(alpha = 0.25)
 ```
 
